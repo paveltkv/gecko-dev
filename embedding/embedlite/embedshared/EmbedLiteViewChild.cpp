@@ -1059,9 +1059,10 @@ mozilla::ipc::IPCResult EmbedLiteViewChild::RecvInputDataTouchEvent(const Scroll
   LOGT("thread: %ld", syscall(SYS_gettid));
   MOZ_ASSERT(NS_IsMainThread());
 
-  WidgetTouchEvent localEvent;
+  bool res = false;
+  WidgetTouchEvent localEvent = mHelper->ConvertMutiTouchInputToEvent(aInput, res);
 
-  if (!mHelper->ConvertMutiTouchInputToEvent(aInput, localEvent)) {
+  if (!res) {
     return IPC_OK();
   }
 

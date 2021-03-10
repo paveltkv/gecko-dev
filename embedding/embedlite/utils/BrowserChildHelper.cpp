@@ -508,17 +508,19 @@ BrowserChildHelper::GetInnerSize()
   return mInnerSize;
 }
 
-bool
+WidgetTouchEvent
 BrowserChildHelper::ConvertMutiTouchInputToEvent(const mozilla::MultiTouchInput& aData,
-                                                 WidgetTouchEvent& aEvent)
+                                                 bool& aRes)
 {
   nsPoint offset;
   nsCOMPtr<nsIWidget> widget = GetWidget(&offset);
   if (!widget) {
-    return false;
+    aRes = false;
+    return WidgetTouchEvent();
   }
-  aEvent = aData.ToWidgetTouchEvent(widget);
-  return true;
+
+  aRes = true;
+  return aData.ToWidgetTouchEvent(widget);
 }
 
 nsIWidget*
