@@ -39,6 +39,7 @@
 #include "mozilla/dom/Document.h"
 #include "mozilla/PresShell.h"
 #include "mozilla/layers/DoubleTapToZoom.h" // for CalculateRectToZoomTo
+#include "mozilla/layers/InputAPZContext.h" // for InputAPZContext
 #include "nsIFrame.h"                       // for nsIFrame
 #include "FrameLayerBuilder.h"              // for FrameLayerbuilder
 
@@ -791,10 +792,11 @@ EmbedLiteViewChild::InitEvent(WidgetGUIEvent& event, nsIntPoint* aPoint)
 
 mozilla::ipc::IPCResult EmbedLiteViewChild::RecvHandleDoubleTap(const LayoutDevicePoint &aPoint,
                                                                 const Modifiers &aModifiers,
-                                                                const ScrollableLayerGuid &aGuid)
+                                                                const ScrollableLayerGuid &aGuid,
+                                                                const uint64_t &aInputBlockId)
 {
   bool ok = false;
-  CSSPoint cssPoint = mHelper->ApplyPointTransform(aPoint, aGuid, &ok);
+  CSSPoint cssPoint = mHelper->ApplyPointTransform(aPoint, aGuid, aInputBlockId, &ok);
   NS_ENSURE_TRUE(ok, IPC_OK());
 
   nsIContent* content = nsLayoutUtils::FindContentFor(aGuid.mScrollId);
@@ -826,7 +828,8 @@ mozilla::ipc::IPCResult EmbedLiteViewChild::RecvHandleDoubleTap(const LayoutDevi
 
 mozilla::ipc::IPCResult EmbedLiteViewChild::RecvHandleSingleTap(const LayoutDevicePoint &aPoint,
                                                                 const Modifiers &aModifiers,
-                                                                const ScrollableLayerGuid &aGuid)
+                                                                const ScrollableLayerGuid &aGuid,
+                                                                const uint64_t &aInputBlockId)
 {
   if (mIMEComposing) {
     // If we are in the middle of compositing we must finish it, before it is too late.
@@ -840,7 +843,7 @@ mozilla::ipc::IPCResult EmbedLiteViewChild::RecvHandleSingleTap(const LayoutDevi
   }
 
   bool ok = false;
-  CSSPoint cssPoint = mHelper->ApplyPointTransform(aPoint, aGuid, &ok);
+  CSSPoint cssPoint = mHelper->ApplyPointTransform(aPoint, aGuid, aInputBlockId, &ok);
   NS_ENSURE_TRUE(ok, IPC_OK());
 
   if (sPostAZPCAsJson.singleTap) {
@@ -863,7 +866,7 @@ mozilla::ipc::IPCResult EmbedLiteViewChild::RecvHandleLongTap(const LayoutDevice
                                                               const uint64_t &aInputBlockId)
 {
   bool ok = false;
-  CSSPoint cssPoint = mHelper->ApplyPointTransform(aPoint, aGuid, &ok);
+  CSSPoint cssPoint = mHelper->ApplyPointTransform(aPoint, aGuid, aInputBlockId, &ok);
   NS_ENSURE_TRUE(ok, IPC_OK());
 
   if (sPostAZPCAsJson.longTap) {
@@ -1068,7 +1071,12 @@ mozilla::ipc::IPCResult EmbedLiteViewChild::RecvInputDataTouchEvent(const Scroll
   }
 
   UserActivity();
-  APZCCallbackHelper::ApplyCallbackTransform(localEvent, aGuid, mWidget->GetDefaultScale());
+
+  // Stash the guid in InputAPZContext so that when the visual-to-layout
+  // transform is applied to the event's coordinates, we use the right transform
+  // based on the scroll frame being targeted.
+  // The other values don't really matter.
+  InputAPZContext context(aGuid, aInputBlockId, aApzResponse);
 
   if (localEvent.mMessage == eTouchStart) {
     // CSS touch actions do not work yet. Thus, explicitly disabling in the code.
