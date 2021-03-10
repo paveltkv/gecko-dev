@@ -653,18 +653,22 @@ mozilla::ipc::IPCResult EmbedLiteViewChild::RecvScheduleUpdate()
 
 mozilla::ipc::IPCResult EmbedLiteViewChild::RecvSuspendTimeouts()
 {
+  LOGT("Implement me");
+/*
   NS_ENSURE_TRUE(mDOMWindow, IPC_OK());
 
   nsCOMPtr<nsPIDOMWindowInner> pwindow(mDOMWindow->GetCurrentInnerWindow());
   if (pwindow && !pwindow->IsFrozen()) {
     pwindow->Freeze();
   }
-
+*/
   return IPC_OK();
 }
 
 mozilla::ipc::IPCResult EmbedLiteViewChild::RecvResumeTimeouts()
 {
+  LOGT("Implement me");
+/*
   NS_ENSURE_TRUE(mDOMWindow, IPC_OK());
 
   nsCOMPtr<nsPIDOMWindowInner> pwindow(mDOMWindow->GetCurrentInnerWindow());
@@ -672,7 +676,7 @@ mozilla::ipc::IPCResult EmbedLiteViewChild::RecvResumeTimeouts()
   if (pwindow && pwindow->IsFrozen()) {
     pwindow->Thaw();
   }
-
+*/
   return IPC_OK();
 }
 
