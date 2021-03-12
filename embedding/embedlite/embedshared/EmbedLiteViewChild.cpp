@@ -177,7 +177,7 @@ EmbedLiteViewChild::InitGeckoWindow(const uint32_t parentId, const bool isPrivat
 
   // Directly create our web browser object and store it, so we can start
   // eliminating QIs.
-  mWebBrowser = new nsWebBrowser();
+  mWebBrowser = new nsWebBrowser(nsIDocShellTreeItem::typeContentWrapper);
   nsIWebBrowser* webBrowser = mWebBrowser;
 
   nsCOMPtr<nsIBaseWindow> baseWindow = do_QueryInterface(WebNavigation());
@@ -218,8 +218,6 @@ EmbedLiteViewChild::InitGeckoWindow(const uint32_t parentId, const bool isPrivat
 
   mWebBrowser->SetContainerWindow(mChrome);
   mChrome->SetChromeFlags(chromeFlags);
-  nsCOMPtr<nsIDocShellTreeItem> docShellItem(do_QueryInterface(baseWindow));
-  docShellItem->SetItemType(nsIDocShellTreeItem::typeContentWrapper);
 
   if (NS_FAILED(baseWindow->Create())) {
     NS_ERROR("Creation of basewindow failed!");
