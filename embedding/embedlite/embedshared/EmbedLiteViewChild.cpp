@@ -176,11 +176,6 @@ EmbedLiteViewChild::InitGeckoWindow(const uint32_t parentId, const bool isPrivat
   LOGT("parentID: %u", parentId);
   nsresult rv;
 
-  // Directly create our web browser object and store it, so we can start
-  // eliminating QIs.
-  mWebBrowser = new nsWebBrowser(nsIDocShellTreeItem::typeContentWrapper);
-  nsIWebBrowser* webBrowser = mWebBrowser;
-
   nsCOMPtr<nsIBaseWindow> baseWindow = do_QueryInterface(WebNavigation());
   if (NS_FAILED(rv)) {
     return;
@@ -200,8 +195,6 @@ EmbedLiteViewChild::InitGeckoWindow(const uint32_t parentId, const bool isPrivat
     return;
   }
 
-  mWebBrowser->SetAllowDNSPrefetch(true);
-
   LayoutDeviceIntRect bounds = mWindow->GetWidget()->GetBounds();
   rv = baseWindow->InitWindow(0, mWidget, 0, 0, bounds.width, bounds.height);
   if (NS_FAILED(rv)) {
@@ -211,6 +204,13 @@ EmbedLiteViewChild::InitGeckoWindow(const uint32_t parentId, const bool isPrivat
   nsCOMPtr<mozIDOMWindowProxy> domWindow;
 
   mChrome = new WebBrowserChrome(this);
+
+  // FIXME: aBrowsingContext and aInitialWindowChild are not passed
+  mWebBrowser = nsWebBrowser::Create(mChrome, mWidget, nullptr,
+                                     nullptr);
+  mWebBrowser->SetAllowDNSPrefetch(true);
+  nsIWebBrowser* webBrowser = mWebBrowser;
+
   uint32_t chromeFlags = 0; // View()->GetWindowFlags();
 
   if (isPrivateWindow || Preferences::GetBool("browser.privatebrowsing.autostart")) {
