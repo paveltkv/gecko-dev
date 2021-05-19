@@ -1,0 +1,78 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pavel Tumakaev <p.tumakaev@omprussia.ru>
+Date: Sun, 28 Mar 2021 15:50:35 +0300
+Subject: [PATCH] [sailfishos][gecko] Including linux_syscall_support.h through
+ symlink
+
+---
+ .../crashreporter/google-breakpad/src/common/linux/file_id.cc   | 2 +-
+ .../google-breakpad/src/common/linux/linux_syscall_support.h    | 1 +
+ .../google-breakpad/src/common/linux/memory_mapped_file.cc      | 2 +-
+ .../google-breakpad/src/common/linux/safe_readlink.cc           | 2 +-
+ .../crashreporter/google-breakpad/src/common/memory_allocator.h | 2 +-
+ 5 files changed, 5 insertions(+), 4 deletions(-)
+ create mode 120000 toolkit/crashreporter/google-breakpad/src/common/linux/linux_syscall_support.h
+
+diff --git a/toolkit/crashreporter/google-breakpad/src/common/linux/file_id.cc b/toolkit/crashreporter/google-breakpad/src/common/linux/file_id.cc
+index 67921c4561ac..0590694f7ea2 100644
+--- a/toolkit/crashreporter/google-breakpad/src/common/linux/file_id.cc
++++ b/toolkit/crashreporter/google-breakpad/src/common/linux/file_id.cc
+@@ -46,7 +46,7 @@
+ #include "common/linux/linux_libc_support.h"
+ #include "common/linux/memory_mapped_file.h"
+ #include "common/using_std_string.h"
+-#include "third_party/lss/linux_syscall_support.h"
++#include "linux_syscall_support.h"
+ 
+ namespace google_breakpad {
+ 
+diff --git a/toolkit/crashreporter/google-breakpad/src/common/linux/linux_syscall_support.h b/toolkit/crashreporter/google-breakpad/src/common/linux/linux_syscall_support.h
+new file mode 120000
+index 000000000000..4ff71c7647f7
+--- /dev/null
++++ b/toolkit/crashreporter/google-breakpad/src/common/linux/linux_syscall_support.h
+@@ -0,0 +1 @@
++../../third_party/lss/linux_syscall_support.h
+\ No newline at end of file
+diff --git a/toolkit/crashreporter/google-breakpad/src/common/linux/memory_mapped_file.cc b/toolkit/crashreporter/google-breakpad/src/common/linux/memory_mapped_file.cc
+index 4e938269f260..eb62ce5bc139 100644
+--- a/toolkit/crashreporter/google-breakpad/src/common/linux/memory_mapped_file.cc
++++ b/toolkit/crashreporter/google-breakpad/src/common/linux/memory_mapped_file.cc
+@@ -30,7 +30,7 @@
+ // memory_mapped_file.cc: Implement google_breakpad::MemoryMappedFile.
+ // See memory_mapped_file.h for details.
+ 
+-#include "common/linux/memory_mapped_file.h"
++#include "memory_mapped_file.h"
+ 
+ #include <fcntl.h>
+ #include <sys/mman.h>
+diff --git a/toolkit/crashreporter/google-breakpad/src/common/linux/safe_readlink.cc b/toolkit/crashreporter/google-breakpad/src/common/linux/safe_readlink.cc
+index 870c28af3b54..37872b5b9c93 100644
+--- a/toolkit/crashreporter/google-breakpad/src/common/linux/safe_readlink.cc
++++ b/toolkit/crashreporter/google-breakpad/src/common/linux/safe_readlink.cc
+@@ -32,7 +32,7 @@
+ 
+ #include <stddef.h>
+ 
+-#include "third_party/lss/linux_syscall_support.h"
++#include "linux_syscall_support.h"
+ 
+ namespace google_breakpad {
+ 
+diff --git a/toolkit/crashreporter/google-breakpad/src/common/memory_allocator.h b/toolkit/crashreporter/google-breakpad/src/common/memory_allocator.h
+index 09de46604642..54ed09710b36 100644
+--- a/toolkit/crashreporter/google-breakpad/src/common/memory_allocator.h
++++ b/toolkit/crashreporter/google-breakpad/src/common/memory_allocator.h
+@@ -47,7 +47,7 @@
+ #define sys_munmap munmap
+ #define MAP_ANONYMOUS MAP_ANON
+ #else
+-#include "third_party/lss/linux_syscall_support.h"
++#include "linux/linux_syscall_support.h"
+ #endif
+ 
+ namespace google_breakpad {
+-- 
+2.25.1
+
