@@ -1,0 +1,68 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pavel Tumakaev <p.tumakaev@omprussia.ru>
+Date: Sat, 6 Mar 2021 00:03:28 +0300
+Subject: [PATCH] [sailfishos][gecko] Return Preferences::GetPreferences back
+
+Preferences::GetPreferences is used in EmbedLiteAppProcessChild:InitXPCOM
+
+See upstream commits:
+    6b81d0b99f2093a9cc2307c96a6f79b6ebe3c1e7
+    e9a980f931e63830c776cf87bfeecf1b12c7542a
+
+Signed-off-by: Pavel Tumakaev <p.tumakaev@omprussia.ru>
+---
+ modules/libpref/Preferences.cpp | 24 ++++++++++++++++++++++++
+ modules/libpref/Preferences.h   |  2 ++
+ 2 files changed, 26 insertions(+)
+
+diff --git a/modules/libpref/Preferences.cpp b/modules/libpref/Preferences.cpp
+index 08b2c34f3100..691e3b2359da 100644
+--- a/modules/libpref/Preferences.cpp
++++ b/modules/libpref/Preferences.cpp
+@@ -3905,6 +3905,30 @@ void Preferences::GetPreference(dom::Pref* aDomPref) {
+   }
+ }
+ 
++void
++Preferences::GetPreferences(nsTArray<dom::Pref>* aPrefs)
++{
++  MOZ_ASSERT(XRE_IsParentProcess());
++  MOZ_ASSERT(NS_IsMainThread());
++
++  aPrefs->SetCapacity(gHashTable->count());
++  for (auto iter = gHashTable->iter(); !iter.done(); iter.next()) {
++    Pref* pref = iter.get().get();
++
++    if (pref->IsTypeNone()) {
++      // The pref value hasn't changed since it was initialized at startup.
++      // Don't bother sending it, because the content process will initialize
++      // it the same way.
++      continue;
++    }
++
++    if (pref->HasAdvisablySizedValues()) {
++      dom::Pref* setting = aPrefs->AppendElement();
++      pref->ToDomPref(setting);
++    }
++  }
++}
++
+ #ifdef DEBUG
+ bool Preferences::ArePrefsInitedInContentProcess() {
+   MOZ_ASSERT(!XRE_IsParentProcess());
+diff --git a/modules/libpref/Preferences.h b/modules/libpref/Preferences.h
+index aa807a04baef..a69138982a67 100644
+--- a/modules/libpref/Preferences.h
++++ b/modules/libpref/Preferences.h
+@@ -484,6 +484,8 @@ class Preferences final : public nsIPrefService,
+   static void GetPreference(dom::Pref* aPref);
+   static void SetPreference(const dom::Pref& aPref);
+ 
++  static void GetPreferences(nsTArray<dom::Pref>* aPrefs);
++
+ #ifdef DEBUG
+   static bool ArePrefsInitedInContentProcess();
+ #endif
+-- 
+2.25.1
+
