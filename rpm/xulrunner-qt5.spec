@@ -320,7 +320,8 @@ echo "ac_add_options --host=i686-unknown-linux-gnu" >> "$MOZCONFIG"
 %endif
 
 %ifarch %arm
-echo "ac_add_options --host=armv7l-unknown-linux-gnueabihf" >> "$MOZCONFIG"
+echo "ac_add_options --host=armv7-unknown-linux-gnueabihf" >> "$MOZCONFIG"
+echo "ac_add_options --target=armv7-unknown-linux-gnueabihf" >> "$MOZCONFIG"
 %endif
 
 %ifarch %ix86 %arm
