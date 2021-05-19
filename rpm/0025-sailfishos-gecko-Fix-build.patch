@@ -1,0 +1,66 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pavel Tumakaev <p.tumakaev@omprussia.ru>
+Date: Tue, 30 Mar 2021 21:55:57 +0300
+Subject: [PATCH] [sailfishos][gecko] Fix build
+
+common.gypi
+x86-mingw-gcc.cmake
+lib.rs
+
+rust.configure fix
+---
+ build/moz.configure/rust.configure       | 1 +
+ config/makefiles/rust.mk                 | 2 --
+ third_party/rust/cc/.cargo-checksum.json | 2 +-
+ third_party/rust/cc/src/lib.rs           | 1 -
+ 4 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/build/moz.configure/rust.configure b/build/moz.configure/rust.configure
+index 4d9f747c4d6b..c52fc8049a78 100644
+--- a/build/moz.configure/rust.configure
++++ b/build/moz.configure/rust.configure
+@@ -408,6 +408,7 @@ rust_host_triple = rust_triple_alias(rust_host, host_c_compiler)
+ 
+ @depends(rust_host, rust_host_triple, rustc_info.host)
+ def validate_rust_host_triple(host, rust_host, rustc_host):
++    return True
+     if rust_host != rustc_host:
+         if host.alias == rust_host:
+             configure_host = host.alias
+diff --git a/config/makefiles/rust.mk b/config/makefiles/rust.mk
+index b5c7973104ce..8a4782cc2c0f 100644
+--- a/config/makefiles/rust.mk
++++ b/config/makefiles/rust.mk
+@@ -28,9 +28,7 @@ cargo_build_flags += --frozen
+ endif
+ 
+ cargo_build_flags += --manifest-path $(CARGO_FILE)
+-ifdef BUILD_VERBOSE_LOG
+ cargo_build_flags += -vv
+-endif
+ 
+ # Enable color output if original stdout was a TTY and color settings
+ # aren't already present. This essentially restores the default behavior
+diff --git a/third_party/rust/cc/.cargo-checksum.json b/third_party/rust/cc/.cargo-checksum.json
+index 417fde7953fd..4f92885898f8 100644
+--- a/third_party/rust/cc/.cargo-checksum.json
++++ b/third_party/rust/cc/.cargo-checksum.json
+@@ -1 +1 @@
+-{"files":{"Cargo.lock":"3aff5f8b0a7f4d72852b11b0526f0002e6bf55f19f1ebd6470d7f97fbd540e60","Cargo.toml":"6ab10d9b6a9c6f0909074e6698c90c6b6a7223661ec2e83174d2593117cbe7f2","LICENSE-APACHE":"a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2","LICENSE-MIT":"378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397","README.md":"7184fbdf375a057e673257348f6d7584c0dd11b66318d98f3647f69eb610b097","src/bin/gcc-shim.rs":"b77907875029494b6288841c3aed2e4939ed40708c7f597fca5c9e2570490ca6","src/com.rs":"bcdaf1c28b71e6ef889c6b08d1ce9d7c0761344a677f523bc4c3cd297957f804","src/lib.rs":"4753929dbb7b676c19d7cfa06d0a47e37003554b80c536cbf2b892d591ef61c2","src/registry.rs":"3cc1b5a50879fa751572878ae1d0afbfc960c11665258492754b2c8bccb0ff5d","src/setup_config.rs":"7014103587d3382eac599cb76f016e2609b8140970861b2237982d1db24af265","src/winapi.rs":"ea8b7edbb9ff87957254f465c2334e714c5d6b3b19a8d757c48ea7ca0881c50c","src/windows_registry.rs":"388e79dcf3e84078ae0b086c6cdee9cf9eb7e3ffafdcbf3e2df26163661f5856","tests/cc_env.rs":"e02b3b0824ad039b47e4462c5ef6dbe6c824c28e7953af94a0f28f7b5158042e","tests/cflags.rs":"57f06eb5ce1557e5b4a032d0c4673e18fbe6f8d26c1deb153126e368b96b41b3","tests/cxxflags.rs":"c2c6c6d8a0d7146616fa1caed26876ee7bc9fcfffd525eb4743593cade5f3371","tests/support/mod.rs":"71620b178583b6e6e5e0d4cac14e2cef6afc62fb6841e0c72ed1784543abf8ac","tests/test.rs":"1605640c9b94a77f48fc92e1dc0485bdf1960da5626e2e00279e4703691656bc"},"package":"aa87058dce70a3ff5621797f1506cb837edd02ac4c0ae642b4542dce802908b8"}
+\ No newline at end of file
++{"files":{"Cargo.lock":"3aff5f8b0a7f4d72852b11b0526f0002e6bf55f19f1ebd6470d7f97fbd540e60","Cargo.toml":"6ab10d9b6a9c6f0909074e6698c90c6b6a7223661ec2e83174d2593117cbe7f2","LICENSE-APACHE":"a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2","LICENSE-MIT":"378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397","README.md":"7184fbdf375a057e673257348f6d7584c0dd11b66318d98f3647f69eb610b097","src/bin/gcc-shim.rs":"b77907875029494b6288841c3aed2e4939ed40708c7f597fca5c9e2570490ca6","src/com.rs":"bcdaf1c28b71e6ef889c6b08d1ce9d7c0761344a677f523bc4c3cd297957f804","src/lib.rs":"10d0b83217b0c70767c0be587461a5f7f1124015001cb5094f482003d76b1b6c","src/registry.rs":"3cc1b5a50879fa751572878ae1d0afbfc960c11665258492754b2c8bccb0ff5d","src/setup_config.rs":"7014103587d3382eac599cb76f016e2609b8140970861b2237982d1db24af265","src/winapi.rs":"ea8b7edbb9ff87957254f465c2334e714c5d6b3b19a8d757c48ea7ca0881c50c","src/windows_registry.rs":"388e79dcf3e84078ae0b086c6cdee9cf9eb7e3ffafdcbf3e2df26163661f5856","tests/cc_env.rs":"e02b3b0824ad039b47e4462c5ef6dbe6c824c28e7953af94a0f28f7b5158042e","tests/cflags.rs":"57f06eb5ce1557e5b4a032d0c4673e18fbe6f8d26c1deb153126e368b96b41b3","tests/cxxflags.rs":"c2c6c6d8a0d7146616fa1caed26876ee7bc9fcfffd525eb4743593cade5f3371","tests/support/mod.rs":"71620b178583b6e6e5e0d4cac14e2cef6afc62fb6841e0c72ed1784543abf8ac","tests/test.rs":"1605640c9b94a77f48fc92e1dc0485bdf1960da5626e2e00279e4703691656bc"},"package":"aa87058dce70a3ff5621797f1506cb837edd02ac4c0ae642b4542dce802908b8"}
+diff --git a/third_party/rust/cc/src/lib.rs b/third_party/rust/cc/src/lib.rs
+index 621d31d6b8a9..ed1f60d10e88 100644
+--- a/third_party/rust/cc/src/lib.rs
++++ b/third_party/rust/cc/src/lib.rs
+@@ -1436,7 +1436,6 @@ impl Build {
+             }
+             ToolFamily::Gnu => {
+                 if target.contains("i686") || target.contains("i586") {
+-                    cmd.args.push("-m32".into());
+                 } else if target == "x86_64-unknown-linux-gnux32" {
+                     cmd.args.push("-mx32".into());
+                 } else if target.contains("x86_64") || target.contains("powerpc64") {
+-- 
+2.25.1
+

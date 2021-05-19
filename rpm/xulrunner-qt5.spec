@@ -68,6 +68,7 @@ Patch21:    0021-sailfishos-compositor-Allow-compositor-specializatio.patch
 Patch22:    0022-sailfishos-gecko-Return-Preferences-GetPreferences-b.patch
 Patch23:    0023-sailfishos-gecko-Hackish-fix-for-preferences-usage-i.patch
 Patch24:    0024-sailfishos-gecko-Including-linux_syscall_support.h-t.patch
+Patch25:    0025-sailfishos-gecko-Fix-build.patch
 #Patch9:     0009-sailfishos-gecko-Create-EmbedLiteCompositorBridgePar.patch
 #Patch10:    0010-sailfishos-gecko-Remove-PuppetWidget-from-TabChild-i.patch
 #Patch11:    0011-sailfishos-gecko-Make-TabChild-to-work-with-TabChild.patch
