@@ -66,7 +66,7 @@ Patch19:    0019-sailfishos-mozglue-Introduce-EmbedInitGlue-to-the-mo.patch
 Patch20:    0020-sailfishos-gecko-Remove-static-registration-of-the-m.patch
 Patch21:    0021-sailfishos-compositor-Allow-compositor-specializatio.patch
 Patch22:    0022-sailfishos-gecko-Return-Preferences-GetPreferences-b.patch
-#Patch3:     0003-sailfishos-gecko-Hackish-fix-for-preferences-usage-i.patch
+Patch23:    0023-sailfishos-gecko-Hackish-fix-for-preferences-usage-i.patch
 #Patch9:     0009-sailfishos-gecko-Create-EmbedLiteCompositorBridgePar.patch
 #Patch10:    0010-sailfishos-gecko-Remove-PuppetWidget-from-TabChild-i.patch
 #Patch11:    0011-sailfishos-gecko-Make-TabChild-to-work-with-TabChild.patch
