@@ -71,6 +71,11 @@ Patch24:    0024-sailfishos-gecko-Including-linux_syscall_support.h-t.patch
 Patch25:    0025-sailfishos-gecko-Fix-build.patch
 Patch26:    0026-sailfishos-gecko-Disable-link-time-optimization-for-.patch
 Patch27:    0027-sailfishos-gecko-Force-to-build-mozglue-and-xpcomglu.patch
+Patch28:    0028-Revert-Bug-445128-Stop-putting-the-version-number-in.patch
+Patch29:    0029-Revert-Bug-1427455-Remove-unused-variables-from-base.patch
+Patch30:    0030-Revert-Bug-1333826-Remove-SDK_FILES-SDK_LIBRARY-and-.patch
+Patch31:    0031-Revert-Bug-1333826-Remove-the-make-sdk-build-target-.patch
+Patch32:    0032-Revert-Bug-1333826-Remove-a-few-references-from-.mk-.patch
 #Patch9:     0009-sailfishos-gecko-Create-EmbedLiteCompositorBridgePar.patch
 #Patch10:    0010-sailfishos-gecko-Remove-PuppetWidget-from-TabChild-i.patch
 #Patch11:    0011-sailfishos-gecko-Make-TabChild-to-work-with-TabChild.patch
@@ -349,12 +354,11 @@ export SB2_RUST_EXECVP_SHIM="/usr/bin/env LD_PRELOAD=/usr/lib/libsb2/libsb2.so.1
 export SB2_RUST_USE_REAL_EXECVP=Yes
 export SB2_RUST_USE_REAL_FN=Yes
 
-%{__make} -C %BUILD_DIR/embedding/embedlite/installer install DESTDIR=%{buildroot}
+%{__make} -C %BUILD_DIR/mobile/sailfishos/installer install DESTDIR=%{buildroot}
 
-for i in $(cd ${RPM_BUILD_ROOT}%{mozappdirdev}/sdk/lib/; ls *.so); do
-    rm ${RPM_BUILD_ROOT}%{mozappdirdev}/sdk/lib/$i
-    ln -s %{mozappdir}/$i ${RPM_BUILD_ROOT}%{mozappdirdev}/sdk/lib/$i
-done
+rm -rf ${RPM_BUILD_ROOT}%{mozappdirdev}/sdk/lib/libxul.so
+ln -s %{mozappdir}/libxul.so ${RPM_BUILD_ROOT}%{mozappdirdev}/sdk/lib/libxul.so
+
 %fdupes -s %{buildroot}%{_includedir}
 %fdupes -s %{buildroot}%{_libdir}
 %{__chmod} +x %{buildroot}%{mozappdir}/*.so
@@ -390,7 +394,6 @@ touch /var/lib/_MOZEMBED_CACHE_CLEAN_
 
 %files devel
 %defattr(-,root,root,-)
-%{_datadir}/*
 %{mozappdirdev}
 %{_libdir}/pkgconfig
 %{_includedir}/*
